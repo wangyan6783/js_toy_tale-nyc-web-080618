@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
                       <div class="card" id=${data.name}>
                         <h2>${toyObj.name}</h2>
                         <img src=${toyObj.image} class="toy-avatar">
-                        <p>${toyObj.likes} Likes </p>
+                        <p id="${toyObj.name}_like">${toyObj.likes} Likes </p>
                         <button class="like-btn" data-name="${toyObj.name}">Like <3</button>
                       </div>
                       `
@@ -20,7 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const addBtn = document.querySelector('#new-toy-btn')
   const toyForm = document.querySelector('.container')
   let addToy = false
-  // YOUR CODE HERE
 
   addBtn.addEventListener('click', () => {
     // hide & seek with the form
@@ -46,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="card" id=${data.name}>
             <h2>${data.name}</h2>
             <img src=${data.image} class="toy-avatar">
-            <p>${data.likes} Likes </p>
+            <p id="${data.name}_like">${data.likes} Likes </p>
             <button class="like-btn" data-name="${toyObj.name}">Like <3</button>
           </div>
           `
@@ -65,12 +64,12 @@ document.addEventListener("DOMContentLoaded", () => {
       let toyImg;
       fetch("http://localhost:3000/toys/")
       .then(response => response.json())
-      .then(data => data.find((toyObj) => toyObj.name === toyName))
-      .then(toyObj => {
+      .then(
+        data => {
+        let toyObj = data.find((toyObj) => toyObj.name === toyName)
         toyId = toyObj.id;
         toyLikes = toyObj.likes+1;
         toyImg = toyObj.image;
-      }).then((resp) => {
         fetch(`http://localhost:3000/toys/${toyId}`, {
           method: 'PUT',
           headers: {
@@ -79,18 +78,13 @@ document.addEventListener("DOMContentLoaded", () => {
           },
           body: JSON.stringify({name: toyName, image: toyImg, likes: toyLikes})
         })
+        console.log(toyLikes);
+        let likeP = document.getElementById(`${toyName}_like`)
+        likeP.innerHTML = `
+          <p>${toyLikes} Likes </p>
+        `
       })
-      // debugger
-      let toyContainer = event.target.previousSibling
-      toyContainer.innerHTML =
-      `
-        <p>${toyLikes} Likes </p>
-      `
     }
   })
-
-
-  // OR HERE!
-
 
 })
